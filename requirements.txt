@@ -1,0 +1,9 @@
+# Training (macOS/Apple Silicon or any machine with PyTorch) and ONNX export
+numpy
+pandas
+opencv-python
+torch
+onnx
+onnxruntime
+
+# Robot-side inference additionally needs ROS 2 (rclpy, cv_bridge, sensor_msgs, geometry_msgs)

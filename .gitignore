@@ -1,0 +1,20 @@
+# Dataset (large; see data/README.md)
+data/lane_dataset/
+lane_dataset/
+
+# ROS 2 build artefacts
+build/
+install/
+log/
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+.conda/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store

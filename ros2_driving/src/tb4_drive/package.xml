@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>tb4_drive</name>
+  <version>1.0.0</version>
+  <description>Drive a TurtleBot 4 along a red line with a classical or a learned (ONNX) controller.</description>
+  <maintainer email="arttulahti@icloud.com">Arttu Lahti (archulum)</maintainer>
+  <license>Apache-2.0</license>
+
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>cv_bridge</exec_depend>
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>python3-opencv</exec_depend>
+  <exec_depend>python3-numpy</exec_depend>
+  <!-- onnxruntime is installed with pip (pip install onnxruntime) -->
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
