@@ -2,8 +2,11 @@
 
 This is a project made as a demo for an upcoming Robot Learning Labs course at Tampere University. A [TurtleBot 4](https://turtlebot.github.io/turtlebot4-user-manual/) follows a red tape track using a **small CNN (~0.7 MB, sub-millisecond on CPU)** trained on a dataset I recorded myself. The OAK-D camera looks at the floor through a **3D-printed mirror bracket**, which removes the camera's forward blind zone. The network is trained by imitation: it learns to reproduce the steering of a classical HSV + proportional controller from the mirror image alone.
 
-<!-- demo (WIP)
--->
+<p align="center">
+  <img src="docs/images/demo.gif" alt="TurtleBot 4 following a red tape line w/ the learned controller" width="240">
+</p>
+
+<p align="center"><em>The robot following the tape through a corner (<a href="docs/videos/demo.mp4">higher-quality clip</a>).</em></p>
 
 ![Camera views](docs/images/camera_views.png)
 
@@ -58,12 +61,16 @@ docs/images/              figures used in this README
 
 ## Hardware
 
-- TurtleBot 4 (Create 3 base + Raspberry Pi 4), ROS 2 Jazzy
-- OAK-D camera (RGB preview topic `/oakd/rgb/preview/image_raw`)
-- 3D-printed mirror bracket holding a mirror at ≈ 25–35° in front of the camera so it sees the floor just ahead of the robot
+- TurtleBot 4 w/ ROS 2 Jazzy
+- OAK-D camera
+- 3D-printed mirror bracket holding a mirror at ≈ 25–35° in front of the camera so it sees the floor just ahead of the robot (STL file available in hardware folder)
 - Red tape track on carpet
 
-<!-- photo of robot and bracket (WIP) -->
+<p align="center">
+  <img src="docs/images/robot.jpg" alt="TurtleBot 4 with the 3D-printed mirror bracket and attached mirror" width="380">
+</p>
+
+<p align="center"><em>The robot with the 3D-printed mirror arm in front of the camera.</em></p>
 
 ## Usage
 
@@ -102,8 +109,9 @@ Launch arguments: `controller` (`classical` | `ml`), `drive`, `linear_speed`, `m
 
 Node defaults: the classical controller drives at 0.15 m/s (the speed the dataset was recorded at), the ML controller at 0.10 m/s. Other parameters: `p_gain`, `alpha`, `rotate_speed` (classical); `max_angular`, `lost_grace`, `reacquire_frames`, `match_jpeg` (ML). With `match_jpeg:=true` the frame is JPEG-encoded and decoded before inference so its statistics match the JPEG-saved training images. The classical node also publishes an annotated `~/debug_image`.
 
-## Limitations and next steps
+## Known issues, limitations and next steps
 
+- Red thresholding needs some more optimization and tweaking; currently bright lights reflecting off the tape can make the robot lose the line.
 - One track, one lighting setup, one robot; no domain randomisation yet.
 - Pure behaviour cloning of a classical controller can't outperform it and doesn't see its own mistakes — DAgger-style relabelling of the learned policy's trajectories is the obvious next step.
 - The red-tape HSV gate is still in the loop for line-lost detection; the network only does steering.
