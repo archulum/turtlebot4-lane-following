@@ -1,6 +1,6 @@
 # TurtleBot 4 Lane Following — learning a line follower from a mirror camera
 
-This is a project made as a demo for an upcoming Robot Learning Labs course at Tampere University. A [TurtleBot 4](https://turtlebot.github.io/turtlebot4-user-manual/) follows a red tape track using a **small CNN (~0.7 MB, sub-millisecond on CPU)** trained on a dataset I recorded myself. The OAK-D camera looks at the floor through a **3D-printed mirror bracket**, which removes the camera's forward blind zone. The network is trained by imitation: it learns to reproduce the steering of a classical HSV + proportional controller from the mirror image alone.
+This is a project made as a demo for an upcoming Robot Learning Labs course at Tampere University. A [TurtleBot 4](https://turtlebot.github.io/turtlebot4-user-manual/) follows a red tape track using a **small CNN (~0.7 MB)** trained on a dataset I recorded myself. The OAK-D camera looks at the floor through a **3D-printed mirror bracket**, which removes the camera's forward blind zone. The network is trained by imitation: it learns to reproduce the steering of a classical HSV + proportional controller from the mirror image alone.
 
 <p align="center">
   <img src="docs/images/demo.gif" alt="TurtleBot 4 following a red tape line w/ the learned controller" width="240">
@@ -45,6 +45,8 @@ Per run: `fwd_2` RMSE 0.020, `rev_2` RMSE 0.021 (labels span ≈ −0.40 … +0.
 
 > **What this does and doesn't show.** The validation labels are the _classical controller's_ commands, so this measures how faithfully the CNN clones that controller from the mirror image, not an independent measure of driving quality. The largest deviations are on the sharpest corners, where the network under-steers slightly. The robot completes the track with the learned controller; a quantitative closed-loop comparison (lap time, line-offset, interventions) against the classical controller is still to do.
 
+**Where things run:** the TurtleBot only streams camera images over ROS 2 and executes `/cmd_vel`. The recorder and both driving nodes run on a separate computer (a VM in my setup) on the same network, and the model runs there on CPU through ONNX Runtime. The ML node logs its per-frame processing time (`infer=… ms`).
+
 ## Repository layout
 
 ```
@@ -74,7 +76,7 @@ docs/images/              figures used in this README
 
 ## Usage
 
-### 1. Record data (on the robot, ROS 2 Jazzy)
+### 1. Record data (ROS 2 Jazzy, on a computer connected to the robot)
 
 ```bash
 cd ros2_datacol && colcon build --packages-select tb4_record && source install/setup.bash
