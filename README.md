@@ -1,6 +1,6 @@
 # TurtleBot 4 Lane Following — learning a line follower from a mirror camera
 
-This is a project made as a demo for an upcoming Robot Learning Labs course at Tampere University. A [TurtleBot 4](https://turtlebot.github.io/turtlebot4-user-manual/) follows a red tape track using a **small CNN (~0.7 MB)** trained on a dataset I recorded myself. The OAK-D camera looks at the floor through a **3D-printed mirror bracket**, which removes the camera's forward blind zone. The network is trained by imitation: it learns to reproduce the steering of a classical HSV + proportional controller from the mirror image alone.
+This is a project made as a demo for an upcoming Robot Learning Labs course at Tampere University. A little demo of imitation learning on a [TurtleBot 4](https://turtlebot.github.io/turtlebot4-user-manual/), which follows a red tape track using a **small CNN (~0.7 MB)**. The CNN was trained to reproduce a classical proportional line follower from a mirror camera image, and it drives around a simple red tape track (roughly an oval with a few additional corners) on which it was trained and evaluated.
 
 <p align="center">
   <img src="docs/images/demo.gif" alt="TurtleBot 4 following a red tape line w/ the learned controller" width="240">
@@ -30,9 +30,9 @@ _Top: full OAK-D frame — the black trapezoid is the mirror, the lower part is 
 3. **Export** – `training/export_onnx.py` converts the best checkpoint to ONNX and checks parity against PyTorch.
 4. **Drive** – the `tb4_drive` package (`ros2_driving/`) has two self-contained driving nodes selected by one launch file: `classical_controller` (the HSV + proportional controller on its own) and `ml_controller` (runs the ONNX model on every frame). The HSV red-pixel count is still used as a _line present / lost_ gate: the robot drives with the network's steering while tracking, and rotates in place towards the last turn direction to re-acquire the line when it's lost. Both nodes have a watchdog that stops the robot if images stop arriving, and both start in **dry-run mode** (`drive:=false`) until you ask them to move.
 
-## Results
+## Results (same track, held-out laps)
 
-Evaluated on two complete runs held out from training (`fwd_2`, `rev_2`; 3 529 frames), using the exported ONNX model:
+Evaluated on two complete runs held out from training (`fwd_2`, `rev_2`; 3 529 frames), using the exported ONNX model. Same track, lighting and robot as the training data. This measures how closely the CNN copies the classical controller, not driving quality or generalisation.
 
 |                                      | RMSE [rad/s] | MAE [rad/s] |       R² |
 | ------------------------------------ | -----------: | ----------: | -------: |
@@ -113,12 +113,12 @@ Node defaults: the classical controller drives at 0.15 m/s (the speed the datase
 
 ## Known issues, limitations and next steps
 
+- Tried briefly on a more complex track with tight turns and S-bends. The classical controller itself couldn't keep up with the small turns at its current gain, so the learned controller, which clones it, isn't expected to do better. No quantitative results yet.
 - Red thresholding needs some more optimization and tweaking; currently bright lights reflecting off the tape can make the robot lose the line.
 - One track, one lighting setup, one robot; no domain randomisation yet.
 - Pure behaviour cloning of a classical controller can't outperform it and doesn't see its own mistakes — DAgger-style relabelling of the learned policy's trajectories is the obvious next step.
 - The red-tape HSV gate is still in the loop for line-lost detection; the network only does steering.
 - Full frames are recorded to enable look-ahead models (mirror for near view + lower frame for far view).
-- Closed-loop evaluation.
 
 ## License
 
