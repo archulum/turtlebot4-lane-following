@@ -113,7 +113,7 @@ Node defaults: the classical controller drives at 0.15 m/s (the speed the datase
 
 ## Known issues, limitations and next steps
 
-- Tried briefly on a more complex track with tight turns and S-bends. The classical controller itself couldn't keep up with the small turns at its current gain, so the learned controller, which clones it, isn't expected to do better. No quantitative results yet.
+- Tried briefly on a more complex track with tight turns and S-bends: the learned controller failed to follow it, and so did the classical controller it imitates, which couldn't keep up with the small turns at its current gain. Since the network only clones that controller and was trained on the simple track alone, this doesn't separate a generalisation failure from the limits of the controller. No quantitative results yet.
 - Red thresholding needs some more optimization and tweaking; currently bright lights reflecting off the tape can make the robot lose the line.
 - One track, one lighting setup, one robot; no domain randomisation yet.
 - Pure behaviour cloning of a classical controller can't outperform it and doesn't see its own mistakes — DAgger-style relabelling of the learned policy's trajectories is the obvious next step.
